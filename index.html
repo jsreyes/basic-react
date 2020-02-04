@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Demo</title>
+    </head>
+    <body>
+        <div id="app"></div>
+
+        <!-- Note: when deploying, replace "development.js" with "production.min.js". -->
+        <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+        <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+        <script type="text/javascript">
+            // PRIMERA PRUEBA //
+
+            // function Title() {
+            //     // createElement(tipoElemento, propiedadesElemento, contenidoElemento)
+            //     return React.createElement('h1', { style: {color: 'red'}}, ' Este es un elemento renderizado por React');
+            // }
+
+            // function Paragraph() {
+            //     return React.createElement('p', null, 'Esto es un parrafo creado por React')
+            // }
+
+            // function Container() {
+            //     return React.createElement('section', null, Title(), Paragraph())
+            // }
+            // // Se pueden englobar funciones dentro de un contenedor para renderizar uno general
+            // ReactDOM.render(Container(), document.getElementById('app'));
+            
+            // SEGUNDA PRUEBA //
+
+            var seconds = 0;
+
+            function Counter() {
+                return React.createElement('h1', null, 'La cantidad de segundos desde que se abrió la página es: ', seconds)
+            }
+
+            window.setInterval(function() {
+                seconds++;
+                ReactDOM.render(Counter(), document.getElementById('app'));
+            }, 1000);
+
+            ReactDOM.render(Counter(), document.getElementById('app'));
+
+        </script>
+    </body>
+</html>
