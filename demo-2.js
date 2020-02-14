@@ -17,7 +17,7 @@ class Copa extends React.Component {
     // Metodo que permite renderizar el componente
     render() {
         // Dependiendo el estado del componente se visualiza una palabra o la otra
-        return <h1>La copa { this.state ? 'tiene' : 'tenia' } { this.props.contenido }</h1>
+        return <h1>La copa { this.state.llena ? 'tiene' : 'tenia' } { this.props.contenido }</h1>
     }
 
     /*
