@@ -24,6 +24,8 @@ class Plato extends React.Component {
             comido: false
         }
     }
+
+    // En este metodo se observa el Conditional Render
     render() {
         if(this.state.comido) {
             return (
