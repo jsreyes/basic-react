@@ -13,7 +13,7 @@ class Mesa extends React.Component {
             comensales: [
                 { nombre: 'Alejandra' },
                 { nombre: 'Paula' },
-                { nombre: 'Carolina' },
+                { nombre: 'Carolina' }, 
                 { nombre: 'Jose' } 
             ]
         }
@@ -22,6 +22,6 @@ class Mesa extends React.Component {
     // Retorna por cada nombre del comensal un componente Lugar
     // En este caso retornara 4 componentes Lugar
     render() {
-        return this.state.map((comensal) => <Lugar persona = { comensal.nombre } /> )
+        return this.state.map((comensal) => <Lugar persona={ comensal.nombre } /> )
     }
 }

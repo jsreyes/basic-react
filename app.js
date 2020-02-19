@@ -18,7 +18,7 @@ class Cuchillo extends React.Component {
 
 class Servilleta extends React.Component {
     render() {
-        return <h1>Esto es una servilleta</h1>
+        return <h1>this.props.children</h1>
     }
 }
 

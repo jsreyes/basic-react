@@ -1,6 +1,6 @@
 class Pollo extends React.Component {
     render() {
-        return <h1>Esto es pollo { this.props.comido } ? 'comido' : 'sin comer'</h1>
+        return <h1>Esto es pollo { this.props.comido ? 'comido' : 'sin comer'} </h1>
     }
 }
 
