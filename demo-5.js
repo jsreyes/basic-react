@@ -12,7 +12,7 @@ class Comanda extends React.Component {
     actualizar(event) {
       this.setState({
         pedido: event.target.value
-        })
+      })
     }
 
     // Cada vez que el usuario modifique se ejecuta el metodo actualizar
