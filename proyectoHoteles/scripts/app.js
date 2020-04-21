@@ -1,10 +1,10 @@
 moment.locale("es");
 const Hero = ({ filters }) => {
   const dateFrom = moment(String(filters.dateFrom)).format(
-    `dddd, d [de] MMMM [de] YYYY`
+    `dddd, D [de] MMMM [de] YYYY`
   );
   const dateTo = moment(String(filters.dateTo)).format(
-    `dddd, d [de] MMMM [de] YYYY`
+    `dddd, D [de] MMMM [de] YYYY`
   );
   return (
     <section className="hero is-primary">
@@ -27,7 +27,7 @@ const Hero = ({ filters }) => {
                   : ""
                 : ""}{" "}
               {filters.rooms !== undefined
-                ? filters.rooms !== "default"
+                ? filters.rooms != 0
                   ? "de hasta " + filters.rooms + " habitaciones"
                   : ""
                 : ""}
@@ -58,7 +58,7 @@ class DateFilter extends React.Component {
             onChange={this.handleDateChange}
             value={this.props.date}
             name={this.props.name}
-            min={this.props.name === "dateFrom" ? new Date() : ""}
+            min="2020-17-04"
           />
           <span className="icon is-small is-left">
             <i className={style}></i>
@@ -114,12 +114,11 @@ class Filters extends React.Component {
 
   handleFiltersChange(event, name) {
     let payload = this.props.filters;
-    // console.log(name, ' hola soy name');
-    // debugger
-    // name === "price" ? Number(event.target.value) : event.target.value;
-    // console.log(typeof event.target.value, ' este es');
-
+    console.log(payload, ' este es payload')
+    console.log(typeof payload, ' este es payload type of')
+   //  name === 'dateFrom' || name === 'dateTo' ? payload[name] = new Date(event.target.value) : payload[name] = event.target.value;
     payload[name] = event.target.value;
+    console.log(typeof payload[name], ' type of')
     this.props.onFilterChange(payload);
   }
 
@@ -177,7 +176,7 @@ class Filters extends React.Component {
         <div className="navbar-item">
           <OptionsFilter
             options={[
-              { value: "default", name: "Cualquier tamaño" },
+              { value: 0, name: "Cualquier tamaño" },
               { value: 10, name: "Hotel pequeño" },
               { value: 20, name: "Hotel mediano" },
               { value: 30, name: "Hotel grande" }
@@ -280,6 +279,7 @@ const Hotels = ({ hotels }) => {
   return (
     <section className="section" style={{ marginTop: "3em" }}>
       <div className="container">
+      {hotels.length > 0 ?
         <div className="columns is-multiline">
           {hotels.map((hotel, index) => (
             <div className="column is-one-third" key={index}>
@@ -287,6 +287,15 @@ const Hotels = ({ hotels }) => {
             </div>
           ))}
         </div>
+        : <article class="message is-danger">
+        <div class="message-header">
+          <p>NO SE ENCONTRARON HOTELES</p>
+          <button class="delete" aria-label="delete"></button>
+        </div>
+        <div class="message-body">
+          <strong>No se encontraron hoteles con los filtros que ha definido, por favor cambie los filtros para realizar una nueva búsqueda</strong>
+        </div>
+      </article> }
       </div>
     </section>
   );
@@ -297,7 +306,7 @@ class App extends React.Component {
     super(props);
     this.state = {
       filters: {
-        dateFrom: today, // Proviene del archivo data.js
+        dateFrom: new Date(today), // Proviene del archivo data.js
         dateTo: new Date(today.valueOf() + 86400000),
         country: undefined,
         price: 0,
@@ -315,33 +324,55 @@ class App extends React.Component {
   }
 
   render() {
-    this.state.filters.dateFrom = undefined;
-    this.state.filters.dateTo = undefined;
+
     this.state.filters.price !== undefined
       ? (this.state.filters.price = Number(this.state.filters.price))
       : (this.state.filters.price = undefined);
-    console.log(this.state.filters, " estos son los filtros");
-
     const validFilters = Object.keys(this.state.filters).filter(filter => {
       const filterValue = this.state.filters[filter];
 
-      if (typeof filterValue === "number") {
-        return filterValue !== 0;
+      if (typeof filterValue === "number" || typeof filterValue === 'string') {
+        return filterValue != 0;
       }
       return filterValue !== undefined;
     });
 
-    console.log(validFilters, " estos son validfilters");
-
-    const hotelsFiltered = this.state.hotels.filter(hotel => {
+    let hotelsFiltered = this.state.hotels.filter(hotel => {
       let expressionStatus = false;
       validFilters.every(key => {
-        expressionStatus = hotel[key] === this.state.filters[key];
+        if(key === 'rooms') {        
+          switch(this.state.filters[key]) {
+            case 0:
+              expressionStatus = true;
+            case '10':
+              expressionStatus = hotel[key] <= Number(this.state.filters[key]);
+              break;
+            case '20': 
+              expressionStatus = (10 < hotel[key]) && ( hotel[key] <= this.state.filters[key]);
+              break;
+            case '30':
+              expressionStatus = hotel[key] > 20;
+              break;
+          }
+        } else if( key === 'dateFrom' || key ==='dateTo') {
+          console.log(this.state.filters[key].valueOf(), ' < ', hotel[key], ' < ' , this.state.filters['dateTo'].valueOf() );
+
+          key === 'dateFrom' ? expressionStatus = (new Date(this.state.filters[key]).valueOf() <= hotel[key] && hotel[key] <= new Date(this.state.filters['dateTo']).valueOf()) : 
+          expressionStatus =  (new Date(this.state.filters['dateFrom']).valueOf() <= hotel[key] <= new Date(this.state.filters[key]).valueOf());
+
+          console.log(expressionStatus, ' este es expression status');
+        }else {
+          expressionStatus = hotel[key] === this.state.filters[key];
+        }
+        console.log(expressionStatus, ' este es')
         return expressionStatus;
       });
 
       return expressionStatus;
     });
+
+    console.log(validFilters.length, ' es te: ', validFilters);
+
 
     console.log(hotelsFiltered, " estos son los hoteles filtrados");
 
@@ -353,9 +384,7 @@ class App extends React.Component {
           onFilterChange={this.handleFilterChange}
         />
         <Hotels
-          hotels={
-            hotelsFiltered.length > 0 ? hotelsFiltered : this.state.hotels
-          }
+          hotels={ hotelsFiltered }
         />
       </div>
     );
